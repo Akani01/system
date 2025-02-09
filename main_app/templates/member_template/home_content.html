@@ -1,0 +1,214 @@
+{% extends 'main_app/base.html' %}
+
+<!-- member_template/home_content.html -->
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+</head>
+         
+<div>
+    <div class="title-1">News &amp; Events</div>
+  </div>
+  
+  <div class="container-fluid">
+    {% if items %}
+    <div class="row">
+        {% for item in items %}
+        <div class="col-md-4 mb-4">
+            <div class="bg-white border">
+                <div class="card-header-ne {% if item.posted_as == 'News' %}news{% else %}events{% endif %} p-2">
+                    <span class="p-0">
+                        {{ item.title|title }}
+                    </span>
+                    {% if request.user.is_superuser %}
+                    <div class="dropstart">
+                        <button class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v text-white"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'edit_post' pk=item.id %}"><i
+                                    class="fas fa-pencil-alt"></i> Edit</a>
+                            <a class="dropdown-item" href="{% url 'delete_post' pk=item.id %}"><i
+                                    class="fas fa-trash-alt"></i> Delete</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+  
+                <div class="p-2 my-2" style="min-height: 120px;">{{ item.summary }}</div>
+  
+                <div class="bg-light p-1 small text-secondary text-end pe-3">
+                    <i class="fa fa-calendar small unstyled"></i>
+                    {{ item.updated_date|timesince }} ago
+                </div>
+  
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+  
+    {% else %}
+    <h4 class="text-center mt-5 py-5 text-muted">
+        <i class="fa-regular fa-folder-open me-2"></i> School news and events will appear here.
+    </h4>
+  
+    {% endif %}
+  
+</div>
+<body>
+    <h1>{{ page_title }}</h1>
+    <a href="{% url 'member_view_attendance' %}">View Attendance</a>
+    <a href="{% url 'member_view_profile' %}">View Profile</a>
+</body>
+<!--Advertisement Ads-->
+
+<!--end-->
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{total_students}}</h3>
+
+                <p>Total Students</p>
+            </div>
+            <div class="icon">
+              <i class="nav-icon fas fa-user-graduate"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{total_staff}}</h3>
+
+                <p>Total Staff</p>
+            </div>
+            <div class="icon">
+              <i class="nav-icon fas fa-users"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-purple">
+            <div class="inner">
+                <h3>{{total_course}}</h3>
+
+                <p>Total Streams</p>
+            </div>
+            <div class="icon">
+              <i class="nav-icon fas fa-th-list"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{total_subject}}</h3>
+
+                <p>Total Subjects</p>
+            </div>
+            <div class="icon">
+              <i class="nav-icon fas fa-book"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{total_schools}}</h3>
+
+                <p>Total Schools</p>
+            </div>
+            <div class="icon">
+              <i class="nav-icon fas fa-book"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-purple">
+          <div class="inner">
+              <h3>{{total_grade}}</h3>
+
+              <p>Total Grades</p>
+          </div>
+          <div class="icon">
+            <i class="nav-icon fas fa-th-list"></i>
+          </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{total_educators}}</h3>
+
+                <p>Total Educators</p>
+            </div>
+            <div class="icon">
+              <i class="nav-icon fas fa-book"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-success">
+          <div class="inner">
+              <h3>{{total_principals}}</h3>
+
+              <p>Total Principals</p>
+          </div>
+          <div class="icon">
+            <i class="nav-icon fas fa-users"></i>
+          </div>
+      </div>
+  </div>
+  <!-- ./col -->
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-purple">
+        <div class="inner">
+            <h3>{{total_members}}</h3>
+
+            <p>Total Members</p>
+        </div>
+        <div class="icon">
+          <i class="nav-icon fas fa-th-list"></i>
+        </div>
+    </div>
+  </div>
+   <!-- ./col -->
+   <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-purple">
+        <div class="inner">
+            <h3>{{total_parents}}</h3>
+
+            <p>Total Parents</p>
+        </div>
+        <div class="icon">
+          <i class="nav-icon fas fa-th-list"></i>
+        </div>
+    </div>
+  </div>
+  
+
+</div>
+{% endblock %}
