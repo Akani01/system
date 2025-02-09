@@ -94,6 +94,14 @@ def index_view(request):
         "subscription_form": subscription_form,
         "subscriptions": subscriptions,
         "photos": photos,
+
+        # Add counts for each shortcut
+        "question_papers_count": question_papers.count(),
+        "schools_count": schools.count(),
+        "prospectors_count": Prospectors.objects.count(),  # Adjust model name if needed
+        "colleges_count": colleges.count(),
+        "bursaries_count": bursaries.count(),
+
     }
 
     return render(request, 'landing/home.html', context)

@@ -662,73 +662,123 @@
 					<div class="col-6 col-sm-4 col-md-3 text-center mb-4">
 						<div class="single-features shortcuts-feature">
 							<div onclick="window.location='#school-section';" style="cursor: pointer;">
-								<div class="single-icon">
+								<div class="single-icon position-relative">
 									<i class="icofont icofont-school-bag"></i>
+									<span class="badge badge-danger position-absolute top-0 end-0">
+										{{ schools_count }}
+									</span>
 								</div>
 								<h3>Schools</h3>
 							</div>
 						</div>
 					</div>
 					<!-- End Single Feature -->
+		
+					<!-- Start Single Feature -->
 					<div class="col-6 col-sm-4 col-md-3 text-center mb-4">
 						<div class="single-features shortcuts-feature">
 							<div onclick="window.location='{% url 'questionpaperlist' %}';" style="cursor: pointer;">
-								<div class="single-icon">
+								<div class="single-icon position-relative">
 									<i class="icofont icofont-file-document"></i>
+									<span class="badge badge-danger position-absolute top-0 end-0">
+										{{ question_papers_count }}
+									</span>
 								</div>
 								<h3>Question Papers</h3>
 							</div>
 						</div>
 					</div>
 					<!-- End Single Feature -->
+		
+					<!-- Start Single Feature -->
 					<div class="col-6 col-sm-4 col-md-3 text-center mb-4">
 						<div class="single-features shortcuts-feature">
 							<div onclick="window.location='{% url 'prospectors_list' %}';" style="cursor: pointer;">
-								<div class="single-icon">
+								<div class="single-icon position-relative">
 									<i class="icofont icofont-book"></i>
+									<span class="badge badge-danger position-absolute top-0 end-0">
+										{{ prospectors_count }}
+									</span>
 								</div>
 								<h3>Prospectors</h3>
 							</div>
 						</div>
 					</div>
 					<!-- End Single Feature -->
+		
+					<!-- Start Single Feature -->
 					<div class="col-6 col-sm-4 col-md-3 text-center mb-4">
 						<div class="single-features shortcuts-feature">
 							<div onclick="window.location='{% url 'college_list' %}';" style="cursor: pointer;">
-								<div class="single-icon">
+								<div class="single-icon position-relative">
 									<i class="icofont icofont-university"></i>
+									<span class="badge badge-danger position-absolute top-0 end-0">
+										{{ colleges_count }}
+									</span>
 								</div>
 								<h3>Universities & Colleges</h3>
 							</div>
 						</div>
 					</div>
 					<!-- End Single Feature -->
+		
+					<!-- Start Single Feature -->
 					<div class="col-6 col-sm-4 col-md-3 text-center mb-4">
 						<div class="single-features shortcuts-feature">
 							<div onclick="window.location='{% url 'bursary_list' %}';" style="cursor: pointer;">
-								<div class="single-icon">
+								<div class="single-icon position-relative">
 									<i class="icofont icofont-money-bag"></i>
+									<span class="badge badge-danger position-absolute top-0 end-0">
+										{{ bursaries_count }}
+									</span>
 								</div>
 								<h3>Bursaries</h3>
 							</div>
 						</div>
 					</div>
 					<!-- End Single Feature -->
+		
+					<!-- Start Single Feature -->
 					<div class="col-6 col-sm-4 col-md-3 text-center mb-4">
 						<div class="single-features shortcuts-feature">
 							<div onclick="window.location='{% url 'soslistview' %}';" style="cursor: pointer;">
-								<div class="single-icon">
+								<div class="single-icon position-relative">
 									<i class="icofont icofont-calendar"></i>
+									<span class="badge badge-danger position-absolute top-0 end-0">
+										{{ assessment_dates_count }}
+									</span>
 								</div>
 								<h3>Assessment Dates</h3>
-						    </div>
+							</div>
 						</div>
 					</div>
 					<!-- End Single Feature -->
 				</div>
 			</div>
 		</section>
-      		
+        <style>
+			.badge-danger {
+				background-color: red;
+				color: white;
+				font-size: 12px;
+				padding: 5px 8px;
+				border-radius: 50%;
+				font-weight: bold;
+			}
+			
+			.single-icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+			}
+			
+			.position-absolute.top-0.end-0 {
+				transform: translate(50%, -50%);
+			}
+			
+		</style>
+
 		<!--/ End Feautes -->
 		<div class="question-papers-section">
 			<h3>
