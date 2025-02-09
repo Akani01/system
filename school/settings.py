@@ -17,6 +17,7 @@ import django_heroku
 import dj_database_url
 from decouple import config
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0xs2i*ee^g!rl^r1fz=wj+nrq)s&l00q5n#k%nwt5^4+u0qdn3'
+SECRET_KEY = 'SECRET_KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -149,12 +150,12 @@ DATABASES = {
 #aws connected online media file
 
 #aws database
-# AWS S3 configuration
-AWS_ACCESS_KEY_ID = 'AKIA3W54F3VE6XXNV444'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'tradingmacro'
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-AWS_DEFAULT_ACL = None  # Optional, makes sure no ACLs are applied
+#aes configurations
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+AWS_DEFAULT_ACL = None
 
 #file overwrite
 AWS_S3_FILE_OVERWRITE = False
