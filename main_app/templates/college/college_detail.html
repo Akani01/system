@@ -1,0 +1,93 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block title %}Bursaries | Learning Management System{% endblock title %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Bursary List</li>
+    </ol>
+</nav>
+
+{% if request.user.is_superuser %}
+<div class="manage-wrap">
+    <a class="btn btn-primary" href="{% url 'bursary_add' %}"><i class="fas fa-plus"></i>Add New Bursary</a>
+</div>
+{% endif %}
+
+<div class="title-1"><i class="fas fa-graduation-cap"></i>Bursary List</div>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>{{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>{{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<div class="table-responsive table-shadow p-0 mt-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Picture</th>
+                <th>Title</th>
+                <th>Summary</th>
+                <th>Posted As</th>
+                <th>Upload Time</th>
+                {% if request.user.is_superuser %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for bursary in bursaries %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>
+                    <img src="{{ bursary.get_picture }}" alt="{{ bursary.title }}" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                </td>
+                <td>{{ bursary.title }}</td>
+                <td>{{ bursary.summary }}</td>
+                <td>{{ bursary.get_posted_as_display }}</td>
+                <td>{{ bursary.upload_time }}</td>
+                {% if request.user.is_superuser %}
+                <td>
+                    <div class="update-delete">
+                        <a href="{% url 'bursary_update' pk=bursary.pk %}" class="update" title="Edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <a href="{% url 'bursary_delete' pk=bursary.pk %}" class="delete" title="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">
+                    <span class="text-danger">
+                        No Bursaries available.
+                        {% if request.user.is_superuser %}
+                        <a href="{% url 'bursary_add' %}">
+                            <i class="primary" style="font-size: 22px;">Add Bursary Now.</i>
+                        </a>
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

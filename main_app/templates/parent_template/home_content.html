@@ -1,0 +1,10 @@
+<!-- templates/parent_template/home_content.html -->
+{% extends 'main_app/base.html' %}
+
+{% block content %}
+<h2>{{ page_title }}</h2>
+<p>Total Attendance Reports: {{ total_attendance_reports }}</p>
+<a href="{% url 'parent_view_attendance' %}">View Attendance Reports</a>
+<a href="{% url 'parent_view_profile' %}">View Profile</a>
+<a href="{% url 'parent_manage_attendance_reports' %}">Manage Attendance Reports</a>
+{% endblock %}

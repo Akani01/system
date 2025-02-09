@@ -1,0 +1,93 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block title %}Colleges | Learning Management System{% endblock title %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">College List</li>
+    </ol>
+</nav>
+
+{% if request.user.is_superuser %}
+<div class="manage-wrap">
+    <a class="btn btn-primary" href="{% url 'college_add' %}"><i class="fas fa-plus"></i>Add New College</a>
+</div>
+{% endif %}
+
+<div class="title-1"><i class="fas fa-university"></i>College List</div>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>{{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>{{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<div class="table-responsive table-shadow p-0 mt-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Picture</th>
+                <th>Title</th>
+                <th>Summary</th>
+                <th>Posted As</th>
+                <th>Upload Time</th>
+                {% if request.user.is_superuser %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for college in colleges %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>
+                    <img src="{{ college.get_picture }}" alt="{{ college.title }}" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                </td>
+                <td>{{ college.title }}</td>
+                <td>{{ college.summary }}</td>
+                <td>{{ college.get_posted_as_display }}</td>
+                <td>{{ college.upload_time }}</td>
+                {% if request.user.is_superuser %}
+                <td>
+                    <div class="update-delete">
+                        <a href="{% url 'college_update' pk=college.pk %}" class="update" title="Edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <a href="{% url 'college_delete' pk=college.pk %}" class="delete" title="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">
+                    <span class="text-danger">
+                        No Colleges available.
+                        {% if request.user.is_superuser %}
+                        <a href="{% url 'college_add' %}">
+                            <i class="primary" style="font-size: 22px;">Add College Now.</i>
+                        </a>
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}
