@@ -300,6 +300,8 @@ class School(models.Model):
     head_principal = models.CharField(max_length=255, null=True, blank=True)
     deputy = models.CharField(max_length=255, null=True, blank=True)
     
+    def __str__(self):
+        return self.name  
    
 
 #Course
