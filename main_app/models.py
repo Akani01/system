@@ -299,6 +299,9 @@ class School(models.Model):
     logo = models.ImageField(upload_to='logos/', null=True, blank=True)
     head_principal = models.CharField(max_length=255, null=True, blank=True)
     deputy = models.CharField(max_length=255, null=True, blank=True)
+
+   def __str__(self):
+        return self.name  
     
    
 
