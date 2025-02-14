@@ -10,12 +10,19 @@ from .forms import *
 from .models import *
 
 
+#principal home
 def principal_home(request):
     principal = get_object_or_404(Principal, admin=request.user)
-    items = NewsAndEvents.objects.all().order_by("-updated_date")
+    
+    # Filter news based on school name appearing in title or summary
+    items = NewsAndEvents.objects.filter(
+        Q(title__icontains=principal.school.name) | 
+        Q(summary__icontains=principal.school.name)
+    ).order_by("-updated_date")
+
     total_students = Student.objects.filter(school=principal.school).count()
-    total_educators = Educator.objects.count()
-    total_subjects = Subject.objects.count()
+    total_educators = Educator.objects.filter(school=principal.school).count()
+    total_subjects = Subject.objects.filter(course_id__school=principal.school).count()
     total_attendance = AttendanceReport.objects.filter(student__school=principal.school).count()
 
     context = {
@@ -29,6 +36,7 @@ def principal_home(request):
     }
     return render(request, 'principal_template/home_content.html', context)
 
+#principal view_students
 def principal_view_students(request):
     principal = get_object_or_404(Principal, admin=request.user)
     students = Student.objects.filter(course=principal.course)
