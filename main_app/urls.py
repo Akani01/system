@@ -323,7 +323,6 @@ urlpatterns = [
     #school daschboard
     path('school/dashboard/', views.school_dashboard, name='school_dashboard'),
     
-    
     #manage school
     path('help/', views.Help.as_view(), name="help"),
     path('about/', views.About.as_view(), name="about"),
@@ -359,6 +358,12 @@ urlpatterns = [
     path('prospectors/search/', ProspectorsSearchView.as_view(), name='prospectors_search'),
     path('prospectors/edit/<int:prospector_id>/', views.prospector_edit, name='prospector_edit'),
     
+    # Add or edit timetable view
+    path('timetable/add/', views.timetable_add_edit, name='timetable_add'),  # For creating a new timetable
+    path('timetable/edit/<int:timetable_id>/', views.timetable_add_edit, name='timetable_edit'),  # For editing an existing timetable
+    path('timetable/', views.timetable_list, name='timetable_list'),
+    
     #Terms and Conditions
     path('terms-conditions/', views.terms_conditions, name='terms_conditions'),
+
 ]
