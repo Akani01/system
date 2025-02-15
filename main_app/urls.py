@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import path
 
 from main_app.EditResultView import EditResultView
-
+from django.contrib.auth import views as auth_views
 from . import hod_views, staff_views, parent_views, member_views, educator_views, circuit_manager_views, student_views, principal_views, views
 from .views import *
 
@@ -365,5 +365,8 @@ urlpatterns = [
     
     #Terms and Conditions
     path('terms-conditions/', views.terms_conditions, name='terms_conditions'),
-
+    #password reset
+    path("password_reset/", views.custom_password_reset_request, name="password_reset_request"),
+        path("password_reset/done/", custom_password_reset_done, name="custom_password_reset_done"),
+    path("reset/<uidb64>/<token>/", views.custom_password_reset_confirm, name="password_reset_confirm"),
 ]

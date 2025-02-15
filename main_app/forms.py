@@ -591,3 +591,16 @@ class ProspectorForm(forms.ModelForm):
     class Meta:
         model = Prospectors
         fields = ['institution', 'address', 'copy', 'logo']
+
+#custom password reset
+class CustomPasswordResetForm(forms.Form):
+    email = forms.EmailField(
+        label="Enter your email",
+        widget=forms.EmailInput(attrs={"class": "form-control"})
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if not CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("No user with this email address found.")
+        return email
