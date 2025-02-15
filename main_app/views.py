@@ -14,6 +14,10 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from bursary.models import Bursary
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
 from college.forms import CollegeAndUniversitiesForm
 from questpaper.models import QuestionPaper, Topic, Department
 from main_app.models import School, Grade, Term, Subject, Educator
@@ -1084,3 +1088,57 @@ def prospector_edit(request, prospector_id):
 
     return render(request, 'prospectors/prospectors_edit.html', {'prospector': prospector})
 
+#Reset Password
+# View to Handle Password Reset Request
+def custom_password_reset_request(request):
+    if request.method == "POST":
+        form = CustomPasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            user = CustomUser.objects.get(email=email)
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_link = request.build_absolute_uri(f"/reset/{uid}/{token}/")
+
+            # Send reset email
+            send_mail(
+                "Password Reset Request",
+                f"Click the link below to reset your password:\n{reset_link}",
+                "noreply@elimcircuit.com",
+                [email],
+                fail_silently=False,
+            )
+
+            messages.success(request, "Password reset link sent to your email.")
+            return redirect("custom_password_reset_done") 
+
+    else:
+        form = CustomPasswordResetForm()
+
+    return render(request, "custom_auth/password_reset_form.html", {"form": form})
+
+# Reset done
+def custom_password_reset_done(request):
+    return render(request, "custom_auth/password_reset_done.html")
+
+
+# View to Handle Password Reset Confirmation
+def custom_password_reset_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        if request.method == "POST":
+            new_password = request.POST.get("password")
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, "Your password has been reset successfully.")
+            return redirect("login_page")
+
+        return render(request, "custom_auth/password_reset_confirm.html")
+
+    messages.error(request, "The password reset link is invalid or has expired.")
+    return redirect("password_reset_request")

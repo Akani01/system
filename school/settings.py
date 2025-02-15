@@ -129,6 +129,7 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 
 
+ACCOUNT_ADAPTER = 'main_app.adapters.MyAccountAdapter'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -150,15 +151,6 @@ DATABASES = {
 #aws connected online media file
 
 #aws database
-#aes configurations
-
-#file overwrite
-AWS_S3_FILE_OVERWRITE = False
-# Media storage in S3
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
-
-
 
 
 # Password validation
