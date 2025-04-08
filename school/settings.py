@@ -136,21 +136,34 @@ ACCOUNT_ADAPTER = 'main_app.adapters.MyAccountAdapter'
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": 'dflkmq4eov2b59',
-        "USER": "ucc101p8dek1pc",
-        "PASSWORD": 'p7d40b2aebf61bf0910d75208f3c774dd3e3b57920a99aaeda8ff88da5a123202',
-        "HOST": "c2v3jin4rntblb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com",
-        "PORT": '5432',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True,
+    )
 }
+
 
 
 
 #aws connected online media file
 
 #aws database
+#aes configurations
+AWS_ACCESS_KEY_ID = 'AKIA3W54F3VE6XXNV444'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'tradingmacro'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_DEFAULT_ACL = None  # Optional, makes sure no ACLs are applied
+
+
+#file overwrite
+AWS_S3_FILE_OVERWRITE = False
+# Media storage in S3
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+
+
 
 
 # Password validation
@@ -192,8 +205,8 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 AUTH_USER_MODEL = 'main_app.CustomUser'
 AUTHENTICATION_BACKENDS = ['main_app.EmailBackend.EmailBackend']
 TIME_ZONE = 'Africa/Johannesburg'
-STUDENT_ID_PREFIX = config("STUDENT_ID_PREFIX", "ugr")
-EDUCATOR_ID_PREFIX = config("EDUCATOR_ID_PREFIX", "lec")
+RESIDENT_ID_PREFIX = config("RESIDENT_ID_PREFIX", "ugr")
+BUSINESS_ID_PREFIX = config("BUSINESS_ID_PREFIX", "lec")
 
 
 STATIC_URL = 'static/'

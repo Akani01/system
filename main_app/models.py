@@ -859,3 +859,4 @@ class Prospectors(models.Model):
         self.copy.delete()
         self.logo.delete()
         super().delete(*args, **kwargs)
+
