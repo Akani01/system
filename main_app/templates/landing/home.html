@@ -834,63 +834,57 @@
 			</div>
 		</div>
        
-		<section class="news-events-section">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="section-title">
-							<h2>Latest News & Events</h2>
-							<p>Stay updated with our latest news and events</p>
-						</div>
+		<div class="owl-carousel news-events-carousel owl-theme">
+			{% for item in news_items %}
+			<div class="news-card">
+				<div class="bg-white border">
+					<!-- 🖼️ News Image Section -->
+					{% if item.image %}
+					<div class="news-image">
+						<img src="{{ item.get_image }}" class="img-fluid w-100" alt="{{ item.title }}">
 					</div>
-				</div>
-			</div>
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-lg-12 col-12">
-						<div class="owl-carousel news-events-carousel owl-theme">
-							{% for item in news_items %}
-							<div class="news-card">
-								<div class="bg-white border">
-									<div class="news-header {% if item.posted_as == 'News' %}news-highlight{% else %}events-highlight{% endif %} p-2">
-										<span class="p-0">
-											{{ item.title|title }}
-										</span>
-										{% if request.user.is_superuser %}
-										<div class="dropdown">
-											<button class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="fas fa-ellipsis-v text-white"></i>
-											</button>
-											<div class="dropdown-menu">
-												<a class="dropdown-item" href="{% url 'edit_post' pk=item.id %}">
-													<i class="fas fa-pencil-alt"></i> Edit
-												</a>
-												<a class="dropdown-item" href="{% url 'delete_post' pk=item.id %}">
-													<i class="fas fa-trash-alt"></i> Delete
-												</a>
-											</div>
-										</div>
-										{% endif %}
-									</div>
+					{% endif %}
+					
+					<!-- News Header -->
+					<div class="news-header {% if item.posted_as == 'News' %}news-highlight{% else %}events-highlight{% endif %} p-2">
+						<span class="p-0">
+							{{ item.title|title }}
+						</span>
 						
-									<div class="p-2 my-2 news-summary">
-										{{ item.summary }}
-									</div>
-						
-									<div class="bg-light p-1 small text-secondary text-end pe-3">
-										<i class="fa fa-calendar small unstyled"></i>
-										{{ item.updated_date|timesince }} ago
-									</div>
-								</div>
+						{% if request.user.is_superuser %}
+						<div class="dropdown">
+							<button class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="fas fa-ellipsis-v text-white"></i>
+							</button>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="{% url 'edit_post' pk=item.id %}">
+									<i class="fas fa-pencil-alt"></i> Edit
+								</a>
+								<a class="dropdown-item" href="{% url 'delete_post' pk=item.id %}">
+									<i class="fas fa-trash-alt"></i> Delete
+								</a>
 							</div>
-							{% empty %}
-							<p>No news items available.</p>
-							{% endfor %}
 						</div>
+						{% endif %}
+					</div>
+		
+					<!-- Summary -->
+					<div class="p-2 my-2 news-summary">
+						{{ item.summary }}
+					</div>
+		
+					<!-- Date -->
+					<div class="bg-light p-1 small text-secondary text-end pe-3">
+						<i class="fa fa-calendar small unstyled"></i>
+						{{ item.updated_date|timesince }} ago
 					</div>
 				</div>
 			</div>
-		</section>
+			{% empty %}
+			<p>No news items available.</p>
+			{% endfor %}
+		</div>
+		
 <script>
 	$(document).ready(function () {
 		$(".news-events-carousel").owlCarousel({
@@ -939,6 +933,13 @@
 		font-size: 14px;
 		font-style: italic; /* Give it a news-like feel */
 		color: #666; /* Subtle contrast for timestamps */
+	}
+	
+	.news-image img {
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
+		object-fit: cover;
+		height: 200px;
 	}
 	
 </style>	
