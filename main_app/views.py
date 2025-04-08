@@ -186,6 +186,7 @@ def general_search_view(request):
         "form": None,  # Placeholder for the form, if needed
     })
 
+#password
 #login_page
 def login_page(request):
     if request.user.is_authenticated:
@@ -357,12 +358,11 @@ def news_view(request):
 
 def post_add(request):
     if request.method == "POST":
-        form = NewsAndEventsForm(request.POST)
+        form = NewsAndEventsForm(request.POST, request.FILES)  # <-- include request.FILES
         title = request.POST.get("title")
         if form.is_valid():
             form.save()
-
-            messages.success(request, (title + " has been uploaded."))
+            messages.success(request, f"{title} has been uploaded.")
             return redirect("home")
         else:
             messages.error(request, "Please correct the error(s) below.")
