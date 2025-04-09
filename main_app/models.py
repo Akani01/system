@@ -38,6 +38,7 @@ POST = (
 )
 
 #Schools Recorded
+DR_T_G_NELUVHOLA_TRAINING_ACADEMY = "DR.T.G_Neluvhola_Training_Academy"
 DJUNANE = "DJUNANE"
 ELIM = "ELIM"
 HLALELANI = "HLALELANI"
@@ -89,6 +90,7 @@ NAME = (
     (VALDEZIA, "VALDEZIA"),
     (HS_PHILLIPS, "HS PHILLIPS"),
     (LEMANA, "LEMANA"),
+    (DR_T_G_NELUVHOLA_TRAINING_ACADEMY, "DR.T.G_Neluvhola_Training_Academy"),
     (MDR, "MDR"),
     (OZIAS_DAVHANA, "OZIAS DAVHANA"),
     (RIVUBYE, "RIVUBYE"),
