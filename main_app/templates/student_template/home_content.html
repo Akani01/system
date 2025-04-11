@@ -2,6 +2,29 @@
 {% load static %}
 {% block page_title %}{{page_title}}{% endblock page_title %}
 {% block content %}
+<style>
+  .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 24px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  .fab:hover {
+      text-decoration: none;
+      opacity: 0.9;
+  }
+</style>
+
 <section class="content">
     <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
@@ -100,6 +123,10 @@
                           </div>
                           <!-- /.card-body -->
                         </div>
+                        <a href="{% url 'addapplication' %}" class="btn btn-primary fab" title="Add Application">
+                          <i class="fas fa-plus"></i>
+                        </a>
+                      
                         <!-- /.card -->
             </div>
                   

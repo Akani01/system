@@ -1168,18 +1168,20 @@ def manage_parent(request):
 
 
 def manage_course(request):
-    courses = (Course.objects
-               .values('school', 'name')  # Replace 'grade' with 'name' or any other valid field
-               .annotate(count=Count('id'))
-               .order_by('school', 'name'))  # Adjust order_by to match the new field
+    courses = (
+        Course.objects
+        .values('id', 'school', 'name')  # ✅ Include 'id' so we can use it in the template
+        .annotate(count=Count('id'))
+        .order_by('school', 'name')
+    )
 
     context = {
         'courses': courses,
-        'page_title': 'Manage Courses'
+        'page_title': 'Manage Courses',
     }
     return render(request, "hod_template/manage_course.html", context)
-  
 
+    
 def manage_session(request):
     sessions = Session.objects.all()
     context = {'sessions': sessions, 'page_title': 'Manage Session'}

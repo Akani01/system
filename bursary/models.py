@@ -33,7 +33,7 @@ class Bursary(models.Model):
     ]
 
     title = models.CharField(max_length=200, null=True)
-    summary = models.TextField(max_length=200, blank=True, null=True)
+    summary = models.TextField(max_length=20000, blank=True, null=True)
     website_url = models.CharField(max_length=2000, null=True, blank=True)
     picture = models.ImageField(upload_to="profile_pictures/%y/%m/%d/", default="default.png", null=True)
     posted_as = models.CharField(choices=POST_CHOICES, max_length=10)

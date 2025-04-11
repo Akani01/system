@@ -1703,39 +1703,68 @@
                                                 </p>
                                             </a>
                                             <ul class="nav nav-treeview">
+                                        
+                                                <!-- College & Universities -->
                                                 <li class="nav-item">
                                                     {% url 'addapplication' as addapplication %}
-                                                    <a href="{{addapplication}}"
-                                                        class="nav-link  {% if addapplication == request.path %} active {% endif %}">
+                                                    <a href="{{addapplication}}" class="nav-link {% if addapplication == request.path %} active {% endif %}">
                                                         <i class="far fa-circle nav-icon"></i>
                                                         <p>
-                                                            College&Universities
-                        
+                                                            College & Universities
+                                                            <span class="badge badge-warning right ms-2">NEW</span>
                                                         </p>
                                                     </a>
                                                 </li>
+                                        
+                                                <!-- Universities -->
                                                 <li class="nav-item">
                                                     {% url 'listview' as listview %}
-                                                    <a href="{{listview}}"
-                                                        class="nav-link  {% if listview == request.path %} active {% endif %}">
+                                                    <a href="{{listview}}" class="nav-link {% if listview == request.path %} active {% endif %}">
                                                         <i class="far fa-circle nav-icon"></i>
                                                         <p>
                                                             Universities
-                        
                                                         </p>
                                                     </a>
                                                 </li>
+                                        
+                                                <!-- Bursaries -->
                                                 <li class="nav-item">
                                                     {% url 'bursary_list' as bursary_list %}
-                                                    <a href="{{bursary_list}}"
-                                                        class="nav-link  {% if bursary_list == request.path %} active {% endif %}">
+                                                    <a href="{{bursary_list}}" class="nav-link {% if bursary_list == request.path %} active {% endif %}">
                                                         <i class="far fa-circle nav-icon"></i>
                                                         <p>
                                                             Bursaries
-                        
                                                         </p>
                                                     </a>
                                                 </li>
+                                        
+                                                <!-- Application View -->
+                                                <li class="nav-item">
+                                                    {% url 'application' pk=1 as application_url %}
+                                                    <a href="{{application_url}}" class="nav-link {% if application_url == request.path %} active {% endif %}">
+                                                        <i class="far fa-circle nav-icon"></i>
+                                                        <p>
+                                                            Application
+                                                            <span class="badge badge-info right ms-2">NEW</span>
+                                                        </p>
+                                                    </a>
+                                                </li>
+                                        
+                                                <!-- Upload File -->
+                                                <li class="nav-item">
+                                                    {% url 'uploadfile' as uploadfile_url %}
+                                                    <a href="{{uploadfile_url}}" class="nav-link {% if uploadfile_url == request.path %} active {% endif %}">
+                                                        <i class="far fa-circle nav-icon"></i>
+                                                        <p>
+                                                            Upload File
+                                                            <span class="badge badge-success right ms-2">Payment</span>
+                                                        </p>
+                                                    </a>
+                                                </li>
+                                        
+                                            </ul>
+                                        </li>
+                                        
                         
                         
                                             </ul>

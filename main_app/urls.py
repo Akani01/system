@@ -311,7 +311,7 @@ urlpatterns = [
     
     #documents upload
     path('form/', views.uploadForm, name='form'),
-    path('upload/', views.uploadFile, name='upload'),
+    path('uploadfile/', views.uploadFile, name='uploadfile'),
     path('files/', views.FileView.as_view(), name='files'),
     path('myupload/', views.myUpload, name='myupload'),
     #schools file upload
