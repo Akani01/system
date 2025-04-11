@@ -26,11 +26,14 @@ def gallery(request):
     context = {'universitys': universitys, 'applications': applications}
     return render(request, 'applications/applicationgallery.html', context)
 
-#view phot propfirms
 
+
+#view phot propfirms
 def viewApplication(request, pk):
     application = Application.objects.get(id=pk)
     return render(request, 'applications/application.html', {'application': application})
+
+
 
 #add application
 def addApplication(request):
@@ -39,67 +42,72 @@ def addApplication(request):
 
     if request.method == 'POST':
         data = request.POST
-        image = request.FILES.get('image')  # Get the main image
+        image = request.FILES.get('image')  # Try to get the main image
 
+        # Handle university selection
         if data['university'] != 'none':
             university = University.objects.get(id=data['university'])
         elif data['university_new'] != '':
-            university, created = University.objects.get_or_create(
-                user=user,
-                name=data['university_new'])
+            university, _ = University.objects.get_or_create(user=user, name=data['university_new'])
         else:
             university = None
-       
-        # Check if the main image is provided before creating the Application instance
-        if image:
+
+        # Try to create application with image
+        try:
             application = Application.objects.create(
-                author=user,  # Set the author to the logged-in user
+                author=user,
                 university=university,
-                #next of keen
-                keen=data['keen'],
-                image=image,  # Use the main image
-                #student
+                keen=data.get('keen', ''),
+                image=image,  # This might fail on AWS
                 student=data.get('student', ''),
-                #address
                 address=data.get('address', ''),
-                #disability
                 disability=data.get('disability', ''),
-                #varsity
                 varsity=data.get('varsity', ''),
-                #bursary
                 bursary=data.get('bursary', ''),
-                #details
                 details=data.get('details', ''),
-                
             )
 
-            # Send email to the user after successful application addition
-            email_address = user.email
-            subject = 'Application Added Successfully'
-            listview_url = "https://www.macrosecond.com/application/listview/"
-            message = (
-                'Thank you for adding an application request. Your submission was successful. '
-                'Will process your applications within 48 hours and you will receive a confirmation, GO AHEAD AND UPLOAD DOCUMENTS:\n\n{}'
-            ).format(listview_url)
-            
-            context = {'name': user.first_name, 'message': message}
-            email_template = get_template('emailapp/email.html').render(context)
+        except (ClientError, ValidationError, Exception) as e:
+            # Log the error and retry creating without the image
+            logger.error(f"Image upload failed: {e}")
+            application = Application.objects.create(
+                author=user,
+                university=university,
+                keen=data.get('keen', ''),
+                # image field is excluded if upload failed
+                student=data.get('student', ''),
+                address=data.get('address', ''),
+                disability=data.get('disability', ''),
+                varsity=data.get('varsity', ''),
+                bursary=data.get('bursary', ''),
+                details=data.get('details', ''),
+            )
 
-            # Use from_email and to parameters for sender and recipient
-            email = EmailMessage(subject, email_template, from_email="Macrosecond Apply <your@email.com>", to=[email_address])
-            email.content_subtype = "html"
-            email.send()
+        # Send email after successful creation
+        email_address = user.email
+        subject = 'Application Added Successfully'
+        listview_url = "https://www.elimcircuit.com/application/listview/"
+        message = (
+            'Thank you for adding an application request. Your submission was successful. '
+            'We will process your applications within 48 hours and you will receive a confirmation. '
+            'GO AHEAD AND UPLOAD DOCUMENTS:\n\n{}'
+        ).format(listview_url)
 
-            return redirect('upload')  # Make sure the URL name is correct
-        else:
-            error_message = "Please upload the main image."
-            context = {'universitys': universitys, 'error_message': error_message}
-            return render(request, 'applications/addapplication.html', context)
+        context = {'name': user.first_name, 'message': message}
+        email_template = get_template('emailapp/email.html').render(context)
 
+        email = EmailMessage(subject, email_template, from_email="CMS Apply elimcircuit.com", to=[email_address])
+        email.content_subtype = "html"
+        email.send()
+
+        return redirect('uploadfile')
+
+    # GET request fallback
     context = {'universitys': universitys}
     return render(request, 'applications/addapplication.html', context)
 
- 
+
+
 #galleryview
 def galleryview(request):
 	applications = Application.objects.all()
