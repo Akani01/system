@@ -1,47 +1,83 @@
 {% extends 'main_app/base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
+<style>
+    .rainbow-border {
+        padding: 5px;
+        border-radius: 20px;
+        background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    }
+
+    .rainbow-card {
+        background-color: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
 
             <!-- Back button -->
-            <a href="{% url 'applicationgallery' %}" class="btn btn-dark my-3">Go Back</a>
+            <a href="{% url 'applicationgallery' %}" class="btn btn-outline-secondary mb-4">
+                <i class="bi bi-arrow-left-circle"></i> Go Back
+            </a>
 
-            <!-- Application image and details -->
-            <div class="card shadow p-3" style="height: auto;">
-                {% if application.image %}
-                    <img class="img-fluid mb-3" src="{{ application.image.url }}" alt="Application Image" style="max-height: 400px; object-fit: contain;">
-                {% else %}
-                    <p class="text-muted">No image available</p>
-                {% endif %}
+            <!-- Rainbow-bordered card -->
+            <div class="rainbow-border">
+                <div class="rainbow-card">
 
-                <!-- Student info -->
-                <h5 class="mt-3">Student Name:</h5>
-                <p>{{ application.student }}</p>
+                    <h3 class="mb-4 text-primary">
+                        <i class="bi bi-file-text"></i> Application Details
+                    </h3>
 
-                <h5>University:</h5>
-                <p>{{ application.university.name }}</p>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Student Name</h6>
+                        <p class="fw-semibold">{{ application.student }}</p>
+                    </div>
 
-                <h5>Details:</h5>
-                <p>{{ application.details }}</p>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">University</h6>
+                        <p class="fw-semibold">{{ application.university.name }}</p>
+                    </div>
 
-                <h5>Varsity:</h5>
-                <p>{{ application.varsity }}</p>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Details</h6>
+                        <p>{{ application.details }}</p>
+                    </div>
 
-                <h5>Disability:</h5>
-                <p>{{ application.disability }}</p>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Varsity</h6>
+                        <p>{{ application.varsity }}</p>
+                    </div>
 
-                <h5>Address:</h5>
-                <p>{{ application.address }}</p>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Disability</h6>
+                        <p>{{ application.disability }}</p>
+                    </div>
 
-                <h5>Next of Kin:</h5>
-                <p>{{ application.keen }}</p>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Address</h6>
+                        <p>{{ application.address }}</p>
+                    </div>
 
-                <h5>Bursary Info:</h5>
-                <p>{{ application.bursary }}</p>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Next of Kin</h6>
+                        <p>{{ application.keen }}</p>
+                    </div>
 
-                <small class="text-muted">Submitted by {{ application.author.email }}</small>
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-1">Bursary Info</h6>
+                        <p>{{ application.bursary }}</p>
+                    </div>
+
+                    <p class="text-end text-muted small">
+                        <i class="bi bi-person"></i> Submitted by {{ application.author.email }}
+                    </p>
+
+                </div>
             </div>
 
         </div>
