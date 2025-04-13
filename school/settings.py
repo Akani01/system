@@ -31,7 +31,7 @@ SECRET_KEY = 'SECRET_KEY'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vhembe-632b45acc973.herokuapp.com', '127.0.0.1', 'elimcircuit.com', 'elimcircuit.co.za', 'vhembewest.co.za']
+ALLOWED_HOSTS = ['vhembe-632b45acc973.herokuapp.com', '127.0.0.1', 'www.elimcircuit.com', 'elimcircuit.com', 'elimcircuit.co.za', 'vhembewest.co.za']
 
 
 # Application definition
