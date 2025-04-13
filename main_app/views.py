@@ -358,16 +358,43 @@ def news_view(request):
 
 def post_add(request):
     if request.method == "POST":
-        form = NewsAndEventsForm(request.POST, request.FILES)  # <-- include request.FILES
+        form = NewsAndEventsForm(request.POST, request.FILES)
         title = request.POST.get("title")
+        
         if form.is_valid():
-            form.save()
-            messages.success(request, f"{title} has been uploaded.")
+            post = form.save()
+
+            # Send email to all users
+            User = get_user_model()
+            all_users = User.objects.filter(is_active=True, email__isnull=False).exclude(email="")  # make sure they have emails
+
+            subject = f'New Post: {title}'
+            post_url = f"https://www.elimcircuit.com"  # Change URL to match your actual post detail view
+            message = (
+                f'Hello,\n\nA new post titled "{title}" has just been uploaded to our platform.\n'
+                f'Check it out here: {post_url}\n\nThanks for staying connected!'
+            )
+
+            for user in all_users:
+                context = {'name': user.first_name or user.username, 'message': message}
+                email_template = get_template('emailapp/email.html').render(context)
+                
+                email = EmailMessage(
+                    subject,
+                    email_template,
+                    from_email="CMS Notifications <elimcircuit@gmail.com>",  # or whatever your DEFAULT_FROM_EMAIL is
+                    to=[user.email],
+                )
+                email.content_subtype = "html"
+                email.send(fail_silently=True)
+
+            messages.success(request, f"{title} has been uploaded and emails sent.")
             return redirect("home")
         else:
             messages.error(request, "Please correct the error(s) below.")
     else:
         form = NewsAndEventsForm()
+    
     return render(
         request,
         "core/post_add.html",
@@ -376,7 +403,6 @@ def post_add(request):
             "form": form,
         },
     )
-
 
 #view appointment
 def view_appointments(request):
