@@ -16,13 +16,15 @@ from .forms import CollegeAndUniversitiesForm
 from django.core.mail import send_mass_mail
 from django.contrib.auth.models import User
 from django.conf import settings
-
+from django.contrib.auth import get_user_model
 
 
 def college_list_view(request):
     colleges = CollegeAndUniversities.objects.all().order_by("-upload_time")
     return render(request, "college/college_list.html", {"colleges": colleges})
 
+# Use the active user model (CustomUser)
+User = get_user_model()
 
 def college_add_view(request):
     if request.method == "POST":
@@ -35,20 +37,26 @@ def college_add_view(request):
             message = f"A new university '{college.title}' has been added to the platform. Check it out now!"
             from_email = settings.DEFAULT_FROM_EMAIL
 
-            # Get all users with email
+            # Get all users with an email (using CustomUser model)
             recipients = User.objects.exclude(email="").values_list('email', flat=True)
 
-            messages_to_send = [(subject, message, from_email, [email]) for email in recipients]
+            # Format messages for mass mail
+            messages_to_send = [
+                (subject, message, from_email, [email])
+                for email in recipients
+            ]
 
+            # Send emails
             send_mass_mail(messages_to_send, fail_silently=False)
 
             messages.success(request, "College/University added successfully and notifications sent.")
             return redirect("college_list")
+        else:
+            messages.error(request, "Please fix the errors below.")
     else:
         form = CollegeAndUniversitiesForm()
 
     return render(request, "college/college_form.html", {"form": form})
-
 
 
 def college_update_view(request, pk):

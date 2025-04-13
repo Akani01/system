@@ -28,8 +28,9 @@ class BursaryManager(models.Manager):
 # Bursary model
 class Bursary(models.Model):
     POST_CHOICES = [
-        ('type1', 'Type 1'),
-        ('type2', 'Type 2'),
+        ('funding', 'Funding'),
+        ('Bursary', 'Bursary'),
+        ('Loan', 'Loan'),
     ]
 
     title = models.CharField(max_length=200, null=True)
