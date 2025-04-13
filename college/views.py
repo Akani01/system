@@ -17,14 +17,16 @@ from django.core.mail import send_mass_mail
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail, EmailMessage
+from django.template.loader import render_to_string, get_template 
+
 
 
 def college_list_view(request):
     colleges = CollegeAndUniversities.objects.all().order_by("-upload_time")
     return render(request, "college/college_list.html", {"colleges": colleges})
 
-# Use the active user model (CustomUser)
-User = get_user_model()
+
 
 def college_add_view(request):
     if request.method == "POST":
@@ -32,24 +34,41 @@ def college_add_view(request):
         if form.is_valid():
             college = form.save()
 
-            # Prepare email notification
+            # Email content
             subject = f"New University Added: {college.title}"
-            message = f"A new university '{college.title}' has been added to the platform. Check it out now!"
+            listview_url = "https://www.elimcircuit.com/collegecolleges/"
+            raw_message = (
+                f"A new university '{college.title}' has just been added to the platform. "
+                f"<br><br>Check it out here 👉 <a href='{listview_url}'>{listview_url}</a>"
+            )
+
             from_email = settings.DEFAULT_FROM_EMAIL
 
-            # Get all users with an email (using CustomUser model)
-            recipients = User.objects.exclude(email="").values_list('email', flat=True)
+            # Get all valid email addresses
+            recipient_list = list(
+                User.objects.exclude(email__isnull=True)
+                            .exclude(email__exact="")
+                            .values_list('email', flat=True)
+            )
 
-            # Format messages for mass mail
-            messages_to_send = [
-                (subject, message, from_email, [email])
-                for email in recipients
-            ]
+            # Prepare HTML email
+            context = {
+                "name": "Elim Circuit Community",  # generic name for all
+                "message": raw_message
+            }
+            email_template = get_template("emailapp/email.html").render(context)
 
-            # Send emails
-            send_mass_mail(messages_to_send, fail_silently=False)
+            email = EmailMessage(
+                subject=subject,
+                body=email_template,
+                from_email=from_email,
+                to=[],  # leave this empty
+                bcc=recipient_list  # this sends to all, hidden from each other like BCC in Gmail
+            )
+            email.content_subtype = "html"
+            email.send(fail_silently=False)
 
-            messages.success(request, "College/University added successfully and notifications sent.")
+            messages.success(request, "College/University added and email sent to all users.")
             return redirect("college_list")
         else:
             messages.error(request, "Please fix the errors below.")
@@ -57,6 +76,7 @@ def college_add_view(request):
         form = CollegeAndUniversitiesForm()
 
     return render(request, "college/college_form.html", {"form": form})
+
 
 
 def college_update_view(request, pk):
