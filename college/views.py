@@ -31,8 +31,8 @@ def college_add_view(request):
             college = form.save()
 
             # Prepare email notification
-            subject = f"New University Added: {college.name}"
-            message = f"A new university '{college.name}' has been added to the platform. Check it out now!"
+            subject = f"New University Added: {college.title}"
+            message = f"A new university '{college.title}' has been added to the platform. Check it out now!"
             from_email = settings.DEFAULT_FROM_EMAIL
 
             # Get all users with email
