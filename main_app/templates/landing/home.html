@@ -1205,7 +1205,7 @@
 				            <div class="single-table h-100">
 				                <!-- Bursary Head -->
 				                <div class="table-head text-center">
-				                    <a href="{{ bursary.website_url }}">
+				                    <a href="https://{{ bursary.website_url|cut:'https://'|cut:'http://' }}" target="_blank" rel="noopener noreferrer">
 				                        <div class="icon mb-2">
 				                            <img src="{{ bursary.get_picture }}" alt="{{ bursary.title }}" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
 				                        </div>
@@ -1272,7 +1272,9 @@
 				            <div class="single-table h-100">
 				                <!-- College Head -->
 				                <div class="table-head text-center">
-				                    <a href="{{ college.website_url }}">
+				                    <a href="https://{{ college.website_url|cut:'https://'|cut:'http://' }}" target="_blank" rel="noopener noreferrer">
+										Visit Website
+									</a>									
 				                        <div class="icon mb-2">
 				                            <img src="{{ college.get_picture }}" alt="{{ college.title }}" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
 				                        </div>
