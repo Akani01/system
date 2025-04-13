@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from django.views.generic import ListView, CreateView
 from django.contrib import messages
+from django.contrib.auth import get_user_model
+
 import os
 
 #gallery

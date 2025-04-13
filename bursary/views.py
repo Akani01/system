@@ -16,6 +16,7 @@ from django.urls import reverse_lazy
 from .forms import BursaryForm
 from django.core.mail import send_mass_mail
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.mail import send_mail, EmailMessage
 
@@ -27,6 +28,8 @@ def bursary_list_view(request):
     bursaries = Bursary.objects.all().order_by("-upload_time")
     return render(request, "bursary/bursary_list.html", {"bursaries": bursaries})
 
+# Use the active user model (CustomUser)
+User = get_user_model()
 
 #bursaries added
 def bursary_add_view(request):

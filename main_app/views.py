@@ -35,6 +35,8 @@ from django.utils.decorators import method_decorator
 from django.core.mail import EmailMessage
 from django.db.models import Q
 from questpaper.models import *
+from django.contrib.auth import get_user_model
+
 
 
 #index view
@@ -355,7 +357,10 @@ def news_view(request):
     }
     return render(request, "core/news.html", context)
 
+# Use the active user model (CustomUser)
+User = get_user_model()
 
+#add news events posts
 def post_add(request):
     if request.method == "POST":
         form = NewsAndEventsForm(request.POST, request.FILES)
@@ -364,31 +369,43 @@ def post_add(request):
         if form.is_valid():
             post = form.save()
 
-            # Send email to all users
-            User = get_user_model()
-            all_users = User.objects.filter(is_active=True, email__isnull=False).exclude(email="")  # make sure they have emails
-
-            subject = f'New Post: {title}'
-            post_url = f"https://www.elimcircuit.com"  # Change URL to match your actual post detail view
-            message = (
-                f'Hello,\n\nA new post titled "{title}" has just been uploaded to our platform.\n'
-                f'Check it out here: {post_url}\n\nThanks for staying connected!'
+            # Email content
+            subject = f"New Post: {title}"
+            post_url = "https://www.elimcircuit.com/news"  # Update if you have post-specific URLs
+            raw_message = (
+                f'A new post titled "<strong>{title}</strong>" has just been uploaded to our platform.'
+                f'<br><br>Check it out 👉 <a href="{post_url}">{post_url}</a>'
             )
 
-            for user in all_users:
-                context = {'name': user.first_name or user.username, 'message': message}
-                email_template = get_template('emailapp/email.html').render(context)
-                
-                email = EmailMessage(
-                    subject,
-                    email_template,
-                    from_email="CMS Notifications <elimcircuit@gmail.com>",  # or whatever your DEFAULT_FROM_EMAIL is
-                    to=[user.email],
-                )
-                email.content_subtype = "html"
-                email.send(fail_silently=True)
+            from_email = settings.DEFAULT_FROM_EMAIL
+            User = get_user_model()
 
-            messages.success(request, f"{title} has been uploaded and emails sent.")
+            # Get all valid email addresses
+            recipient_list = list(
+                User.objects.filter(is_active=True)
+                            .exclude(email__isnull=True)
+                            .exclude(email__exact="")
+                            .values_list('email', flat=True)
+            )
+
+            # Prepare HTML email
+            context = {
+                "name": "Elim Circuit Community",
+                "message": raw_message
+            }
+            email_template = get_template("emailapp/email.html").render(context)
+
+            email = EmailMessage(
+                subject=subject,
+                body=email_template,
+                from_email=from_email,
+                to=[],  # not sending to a visible recipient
+                bcc=recipient_list  # everyone receives, but hidden
+            )
+            email.content_subtype = "html"
+            email.send(fail_silently=False)
+
+            messages.success(request, f"{title} has been uploaded and email sent to all users.")
             return redirect("home")
         else:
             messages.error(request, "Please correct the error(s) below.")

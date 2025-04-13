@@ -26,6 +26,8 @@ def college_list_view(request):
     colleges = CollegeAndUniversities.objects.all().order_by("-upload_time")
     return render(request, "college/college_list.html", {"colleges": colleges})
 
+# Use the active user model (CustomUser)
+User = get_user_model()
 
 
 def college_add_view(request):
