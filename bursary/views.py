@@ -13,6 +13,9 @@ from django.views.generic import ListView, CreateView, DeleteView
 from .models import Bursary
 from django.urls import reverse_lazy
 from .forms import BursaryForm
+from django.core.mail import send_mass_mail
+from django.contrib.auth.models import User
+from django.conf import settings
 
 #Bursary Functions
 
@@ -27,11 +30,25 @@ def bursary_add_view(request):
     if request.method == "POST":
         form = BursaryForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Bursary added successfully.")
+            bursary = form.save()
+
+            # Prepare email notification
+            subject = f"New Bursary Available: {bursary.title}"
+            message = f"A new bursary titled '{bursary.title}' has been added to the platform. Apply now!"
+            from_email = settings.DEFAULT_FROM_EMAIL
+
+            # Get all users with email
+            recipients = User.objects.exclude(email="").values_list('email', flat=True)
+
+            messages_to_send = [(subject, message, from_email, [email]) for email in recipients]
+
+            send_mass_mail(messages_to_send, fail_silently=False)
+
+            messages.success(request, "Bursary added successfully and notifications sent.")
             return redirect("bursary_list")
     else:
         form = BursaryForm()
+
     return render(request, "bursary/bursary_add.html", {"form": form})
 
 

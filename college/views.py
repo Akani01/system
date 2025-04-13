@@ -13,6 +13,9 @@ from django.views.generic import ListView, CreateView, DeleteView
 from .models import CollegeAndUniversities
 from django.urls import reverse_lazy
 from .forms import CollegeAndUniversitiesForm
+from django.core.mail import send_mass_mail
+from django.contrib.auth.models import User
+from django.conf import settings
 
 
 
@@ -25,12 +28,27 @@ def college_add_view(request):
     if request.method == "POST":
         form = CollegeAndUniversitiesForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, "College/University added successfully.")
+            college = form.save()
+
+            # Prepare email notification
+            subject = f"New University Added: {college.name}"
+            message = f"A new university '{college.name}' has been added to the platform. Check it out now!"
+            from_email = settings.DEFAULT_FROM_EMAIL
+
+            # Get all users with email
+            recipients = User.objects.exclude(email="").values_list('email', flat=True)
+
+            messages_to_send = [(subject, message, from_email, [email]) for email in recipients]
+
+            send_mass_mail(messages_to_send, fail_silently=False)
+
+            messages.success(request, "College/University added successfully and notifications sent.")
             return redirect("college_list")
     else:
         form = CollegeAndUniversitiesForm()
+
     return render(request, "college/college_form.html", {"form": form})
+
 
 
 def college_update_view(request, pk):
