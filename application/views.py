@@ -36,8 +36,7 @@ def viewApplication(request, pk):
     return render(request, 'applications/application.html', {'application': application})
 
 
-
-#add application
+# add application
 def addApplication(request):
     user = request.user
     universitys = user.university_set.all()
@@ -60,7 +59,7 @@ def addApplication(request):
                 author=user,
                 university=university,
                 keen=data.get('keen', ''),
-                image=image,  # This might fail on AWS
+                image=image,
                 student=data.get('student', ''),
                 address=data.get('address', ''),
                 disability=data.get('disability', ''),
@@ -68,15 +67,12 @@ def addApplication(request):
                 bursary=data.get('bursary', ''),
                 details=data.get('details', ''),
             )
-
         except (ClientError, ValidationError, Exception) as e:
-            # Log the error and retry creating without the image
             logger.error(f"Image upload failed: {e}")
             application = Application.objects.create(
                 author=user,
                 university=university,
                 keen=data.get('keen', ''),
-                # image field is excluded if upload failed
                 student=data.get('student', ''),
                 address=data.get('address', ''),
                 disability=data.get('disability', ''),
@@ -85,29 +81,13 @@ def addApplication(request):
                 details=data.get('details', ''),
             )
 
-        # Send email after successful creation
-        email_address = user.email
-        subject = 'Application Added Successfully'
-        listview_url = "https://www.elimcircuit.com/application/listview/"
-        message = (
-            'Thank you for adding an application request. Your submission was successful. '
-            'We will process your applications within 48 hours and you will receive a confirmation. '
-            'GO AHEAD AND UPLOAD DOCUMENTS:\n\n{}'
-        ).format(listview_url)
-
-        context = {'name': user.first_name, 'message': message}
-        email_template = get_template('emailapp/email.html').render(context)
-
-        email = EmailMessage(subject, email_template, from_email="CMS Apply elimcircuit.com", to=[email_address])
-        email.content_subtype = "html"
-        email.send()
+        # Show success message to user
+        messages.success(request, "Your application was submitted successfully. You can now upload your documents.")
 
         return redirect('uploadfile')
 
-    # GET request fallback
     context = {'universitys': universitys}
     return render(request, 'applications/addapplication.html', context)
-
 
 
 #galleryview

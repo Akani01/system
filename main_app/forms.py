@@ -507,6 +507,7 @@ class NewsAndEventsForm(forms.ModelForm):
             "title",
             "summary",
             "posted_as",
+            "image",  # Add this line to include image
         )
 
     def __init__(self, *args, **kwargs):
@@ -514,7 +515,9 @@ class NewsAndEventsForm(forms.ModelForm):
         self.fields["title"].widget.attrs.update({"class": "form-control"})
         self.fields["summary"].widget.attrs.update({"class": "form-control"})
         self.fields["posted_as"].widget.attrs.update({"class": "form-control"})
+        self.fields["image"].widget.attrs.update({"class": "form-control"})
 
+        
 #school dashboard phase
 class SchoolEditForm(forms.ModelForm):
     class Meta:
