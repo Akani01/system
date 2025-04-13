@@ -7,6 +7,9 @@ from django.urls import reverse_lazy, reverse
 from .models import Application, University
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
+from django.contrib.auth import get_user_model
 from django.views.generic import ListView, CreateView
 from django.contrib import messages
 import os
@@ -36,76 +39,53 @@ def viewApplication(request, pk):
 
 
 #add application
-def addApplication(request):
-    user = request.user
-    universitys = user.university_set.all()
+def post_add(request):
+    if request.method == "POST":
+        form = NewsAndEventsForm(request.POST, request.FILES)
+        title = request.POST.get("title")
+        
+        if form.is_valid():
+            post = form.save()
 
-    if request.method == 'POST':
-        data = request.POST
-        image = request.FILES.get('image')  # Try to get the main image
+            # Send email to all users
+            User = get_user_model()
+            all_users = User.objects.filter(is_active=True, email__isnull=False).exclude(email="")  # make sure they have emails
 
-        # Handle university selection
-        if data['university'] != 'none':
-            university = University.objects.get(id=data['university'])
-        elif data['university_new'] != '':
-            university, _ = University.objects.get_or_create(user=user, name=data['university_new'])
+            subject = f'New Post: {title}'
+            post_url = f"https://www.elimcircuit.com"  # Change URL to match your actual post detail view
+            message = (
+                f'Hello,\n\nA new post titled "{title}" has just been uploaded to our platform.\n'
+                f'Check it out here: {post_url}\n\nThanks for staying connected!'
+            )
+
+            for user in all_users:
+                context = {'name': user.first_name or user.username, 'message': message}
+                email_template = get_template('emailapp/email.html').render(context)
+                
+                email = EmailMessage(
+                    subject,
+                    email_template,
+                    from_email="CMS Notifications <elimcircuit@gmail.com>",  # or whatever your DEFAULT_FROM_EMAIL is
+                    to=[user.email],
+                )
+                email.content_subtype = "html"
+                email.send(fail_silently=True)
+
+            messages.success(request, f"{title} has been uploaded and emails sent.")
+            return redirect("home")
         else:
-            university = None
-
-        # Try to create application with image
-        try:
-            application = Application.objects.create(
-                author=user,
-                university=university,
-                keen=data.get('keen', ''),
-                image=image,  # This might fail on AWS
-                student=data.get('student', ''),
-                address=data.get('address', ''),
-                disability=data.get('disability', ''),
-                varsity=data.get('varsity', ''),
-                bursary=data.get('bursary', ''),
-                details=data.get('details', ''),
-            )
-
-        except (ClientError, ValidationError, Exception) as e:
-            # Log the error and retry creating without the image
-            logger.error(f"Image upload failed: {e}")
-            application = Application.objects.create(
-                author=user,
-                university=university,
-                keen=data.get('keen', ''),
-                # image field is excluded if upload failed
-                student=data.get('student', ''),
-                address=data.get('address', ''),
-                disability=data.get('disability', ''),
-                varsity=data.get('varsity', ''),
-                bursary=data.get('bursary', ''),
-                details=data.get('details', ''),
-            )
-
-        # Send email after successful creation
-        email_address = user.email
-        subject = 'Application Added Successfully'
-        listview_url = "https://www.elimcircuit.com/application/listview/"
-        message = (
-            'Thank you for adding an application request. Your submission was successful. '
-            'We will process your applications within 48 hours and you will receive a confirmation. '
-            'GO AHEAD AND UPLOAD DOCUMENTS:\n\n{}'
-        ).format(listview_url)
-
-        context = {'name': user.first_name, 'message': message}
-        email_template = get_template('emailapp/email.html').render(context)
-
-        email = EmailMessage(subject, email_template, from_email="CMS Apply elimcircuit.com", to=[email_address])
-        email.content_subtype = "html"
-        email.send()
-
-        return redirect('uploadfile')
-
-    # GET request fallback
-    context = {'universitys': universitys}
-    return render(request, 'applications/addapplication.html', context)
-
+            messages.error(request, "Please correct the error(s) below.")
+    else:
+        form = NewsAndEventsForm()
+    
+    return render(
+        request,
+        "core/post_add.html",
+        {
+            "title": "Add Post",
+            "form": form,
+        },
+    )
 
 
 #galleryview
